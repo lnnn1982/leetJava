@@ -3,10 +3,14 @@ package leetCode;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+//import java.io.Serializable;
+
 import org.junit.jupiter.api.Test;
 
 public class AddTowNumber {
-	public class ListNode {
+	public class ListNode /*implements Serializable*/ {
+		//public static final long serialVersionUID = 0;
+		
 		int val;
 		ListNode next;
 
@@ -59,6 +63,39 @@ public class AddTowNumber {
     	return rstHead;
     }
 	
+    //same algorithm, but more concise
+    public ListNode addTwoNumbersV1(ListNode l1, ListNode l2) {
+    	ListNode rstHead = new ListNode(0);
+    	ListNode curNode = rstHead;
+    	int previousCarryBit = 0;
+    	
+    	 while(l1 != null || l2 != null) {
+        	int totalValue = 0;
+        	if(l1 != null && l2 != null) {
+        		totalValue = l1.val + l2.val;
+        		l1 = l1.next;
+        		l2 = l2.next;
+        	}
+        	else if(l1 != null) {
+        		totalValue = l1.val;
+        		l1 = l1.next;
+        	}
+        	else if(l2 != null) {
+        		totalValue = l2.val;
+        		l2 = l2.next;
+        	}
+
+    		curNode.next = new ListNode((totalValue + previousCarryBit)%10);
+    		curNode = curNode.next;
+        	previousCarryBit = (totalValue + previousCarryBit)/10;
+        }
+    	 
+    	 if(previousCarryBit != 0) {
+    		 curNode.next = new ListNode(previousCarryBit);
+    	 }
+    	
+    	return rstHead.next;
+    }
 	
     @Test
     void testAddTwoNum1() {
@@ -74,7 +111,7 @@ public class AddTowNumber {
     	ListNode l2HundredPlace = new ListNode(4);
     	l2TenPlace.next = l2HundredPlace;    	
 
-		ListNode result = addTwoNumbers(l1OnePlace, l2OnePlace);
+		ListNode result = addTwoNumbersV1(l1OnePlace, l2OnePlace);
 		assertAll(() -> assertEquals(7, result.val), () -> assertEquals(0, result.next.val),
 				() -> assertEquals(8, result.next.next.val));
     }
@@ -93,7 +130,7 @@ public class AddTowNumber {
     	ListNode l2HundredPlace = new ListNode(7);
     	l2TenPlace.next = l2HundredPlace;    	
 
-		ListNode result = addTwoNumbers(l1OnePlace, l2OnePlace);
+		ListNode result = addTwoNumbersV1(l1OnePlace, l2OnePlace);
 		assertAll(() -> assertEquals(7, result.val), () -> assertEquals(6, result.next.val),
 				() -> assertEquals(4, result.next.next.val),
 				() -> assertEquals(1, result.next.next.next.val));
@@ -111,7 +148,7 @@ public class AddTowNumber {
     	ListNode l2TenPlace = new ListNode(3);
     	l2OnePlace.next = l2TenPlace;    	
 
-		ListNode result = addTwoNumbers(l1OnePlace, l2OnePlace);
+		ListNode result = addTwoNumbersV1(l1OnePlace, l2OnePlace);
 		assertAll(() -> assertEquals(4, result.val), () -> assertEquals(7, result.next.val),
 				() -> assertEquals(3, result.next.next.val));
 		
