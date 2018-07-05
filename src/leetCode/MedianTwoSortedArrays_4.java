@@ -8,15 +8,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MedianTwoSortedArrays_4 {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-    	if(nums1.length == 0 || nums2.length == 0) {
-    		throw new IllegalArgumentException("input has no sum");
-    	}
-    	
         if(nums1.length > nums2.length) {
         	return findMedianSortedArrays(nums2, nums1);
         }
+        
+    	if(nums1.length == 0 && nums2.length == 0) {
+    		throw new IllegalArgumentException("input has no sum");
+    	}
+    	
+    	int len1 = nums1.length, len2 = nums2.length;
+    	if(len1 == 0) {
+    		if((len2 & 1) == 0) {
+    			return (nums2[len2/2-1]+nums2[len2/2])/2.0;
+    		}
+    		else {
+    			return (double)(nums2[len2/2]);
+    		}
+    	}
 
-        int len1 = nums1.length, len2 = nums2.length;
+        
         int iMin = 0, iMax = nums1.length;
         int i = (iMin+iMax)/2;
         int j = (len1+len2+1)/2 - i;
@@ -137,6 +147,21 @@ public class MedianTwoSortedArrays_4 {
     void testNorma7() {  	   	
     	assertEquals (findMedianSortedArrays(new int[]{1, 3, 5, 7, 9}, new int[]{2, 4, 6, 8}), 5) ;
     }
+    
+    @Test
+    void testNorma8() {  	   	
+    	assertEquals (findMedianSortedArrays(new int[]{1, 3, 5, 7, 9}, new int[]{}), 5) ;
+    }
+    
+    @Test
+    void testNorma9() {  	   	
+    	assertEquals (findMedianSortedArrays(new int[]{1, 3, 5, 7}, new int[]{}), 4) ;
+    }
+    
+    
+    
+    
+    
 }
 
 
