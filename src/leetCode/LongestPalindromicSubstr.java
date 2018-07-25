@@ -10,12 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LongestPalindromicSubstr {
 
 	public String longestPalindrome(String s) {
-		if(s.length() == 1 || s.length() == 0) {
-			return s;
-		}
+        if(s.isEmpty()) {
+        	return "";
+        }
+        
         boolean [][] dp = new boolean[s.length()][s.length()];
-        int maxLen=0;
-        int startIndex=-1;
+        int maxLen=1;
+        int startIndex=0;
         
         for(int i = 0; i < s.length(); i++) {
         	dp[i][i] = true;
@@ -23,7 +24,7 @@ public class LongestPalindromicSubstr {
         	if(i+1 < s.length()) {
         		if(s.charAt(i)== s.charAt(i+1)) {
         			dp[i][i+1] = true;
-        			if(maxLen == 0) {
+        			if(maxLen != 2) {
             			maxLen = 2;
             			startIndex = i;
         			}
@@ -48,18 +49,18 @@ public class LongestPalindromicSubstr {
         		}
         	}
         }
-        
-        if(maxLen == 0) {
-        	return "";
-        }
-        else {
-        	return s.substring(startIndex, startIndex+maxLen);
-        }
+
+        return s.substring(startIndex, startIndex+maxLen);
 	}
 	
 	@Test
 	void testOneCharacter() {
 		assertEquals(longestPalindrome("2"), "2");
+	}
+	
+	@Test
+	void testSinglePalindromicCharacter() {
+		assertEquals(longestPalindrome("abcda"), "a");
 	}
 	
 	@Test
