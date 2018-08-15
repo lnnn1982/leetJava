@@ -15,6 +15,7 @@ public class LongestPalindromicSubstr {
         }
         
         boolean [][] dp = new boolean[s.length()][s.length()];
+        //long [][] dp = new long[s.length()][s.length()];
         int maxLen=1;
         int startIndex=0;
         
