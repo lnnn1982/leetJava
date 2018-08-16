@@ -50,21 +50,6 @@ public class ZigZagConversion_6 {
     }
 	
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	
-	
     @Test
     void testThreeRows() {  	   	
     	assertEquals(convert("PAYPALISHIRING", 3), "PAHNAPLSIIGYIR");
