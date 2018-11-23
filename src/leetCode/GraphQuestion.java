@@ -146,6 +146,109 @@ class ShortestBridgeDFSSolution {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/
+class DistanceKSolution {
+  class TreeNode {
+       int val;
+       TreeNode left;
+       TreeNode right;
+       TreeNode(int x) { val = x; }
+   }
+
+  class GraphNode {
+      int val;
+      List<GraphNode> nList;
+  };
+
+  GraphNode getNodeFromGraph(int val, Map<Integer, GraphNode> graph) {
+      GraphNode node = graph.get(val);
+      if(node != null) {
+          return node;
+      }
+      node = new GraphNode();
+      node.val = val;
+      node.nList = new ArrayList<>();
+
+      graph.put(val, node);
+      return node;
+  }
+
+  void genGraph(TreeNode root, Map<Integer, GraphNode> graph) {
+      if(root == null) {
+          return;
+      }
+
+      GraphNode rootGNode = getNodeFromGraph(root.val, graph);
+      if(root.left != null) {
+          GraphNode lGNode = getNodeFromGraph(root.left.val, graph);
+          rootGNode.nList.add(lGNode);
+          lGNode.nList.add(rootGNode);
+          genGraph(root.left, graph);
+      }
+
+      if(root.right != null) {
+          GraphNode rGNode = getNodeFromGraph(root.right.val, graph);
+          rootGNode.nList.add(rGNode);
+          rGNode.nList.add(rootGNode);
+          genGraph(root.right, graph);
+      }
+  }
+  
+  public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
+      Map<Integer, GraphNode> graph = new HashMap<>();
+      genGraph(root, graph);
+      
+      List<GraphNode> queue = new ArrayList<>();
+      HashSet<GraphNode> visitSet = new HashSet<>();
+      
+      List<Integer> rstList = new ArrayList<>();
+      GraphNode tNode = graph.get(target.val);
+      if(tNode == null) {
+          return rstList;
+      }
+      
+      queue.add(tNode);
+      visitSet.add(tNode);
+      
+      int level = 0;
+      while(!queue.isEmpty()) {
+          if(level == K) {
+              for(GraphNode oneRst : queue) {
+                  rstList.add(oneRst.val);
+              }
+              
+              return rstList;
+          }
+          
+          List<GraphNode> nextQ = new ArrayList<>();
+          for(GraphNode curNode : queue) {
+              for(GraphNode neigh : curNode.nList) {
+                  if(!visitSet.contains(neigh)) {
+                      nextQ.add(neigh);
+                      visitSet.add(neigh);
+                  }
+              }
+          }
+          
+          queue = nextQ;
+          level++;
+      }
+      
+      return rstList;
+      
+      
+      
+  }
+}
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
@@ -199,7 +302,8 @@ public class GraphQuestion {
 		    return false;
     }
     
-    
+////////////////////////////////////////////////////////////////////////////////////////
+    //https://leetcode.com/problems/shortest-bridge/
     public int shortestBridge(int[][] A) {
         int m = A.length;
         int [][] islandGroup = new int[m][m];
@@ -326,6 +430,8 @@ public class GraphQuestion {
         return -1;
     }
 	
+////////////////////////////////////////////////////////////////////////////////////////
+    
     public static void main(String[] args) {
     	int[][] matrix = {{0,0,0,0}, {1,1,9,0}, {1,0,1,1}};
     	boolean rst = maze(matrix);
