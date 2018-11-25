@@ -40,14 +40,41 @@ public class CollectionTest {
 		if(aList.equals(bList)) {
 			System.out.println("equal");
 		}
-
+	}
+	
+	public static void testPriorityQueue() {
+		PriorityQueue<Integer> queue = new PriorityQueue<>();
+		queue.add(1);
+		queue.add(5);
+		queue.add(4);
+		queue.add(3);
+		queue.poll();
 		
+		System.out.println(queue);
 		
+		queue = new PriorityQueue<>(10, new Comparator<Integer>() {
+			public int compare(Integer a, Integer b) {
+				return b-a;
+			}
+		});
+		queue.add(1);
+		queue.add(5);
+		queue.add(4);
+		queue.add(3);
+		queue.poll();
 		
+		System.out.println(queue);
 	}
 	
 	public static void main(String[] args) {
-		testTreeSet();
+		//testTreeSet();
+		//testPriorityQueue();
+		
+		Map<Integer, String> aMap = new HashMap<>();
+		Map<Integer, String> bMap = new HashMap<>();
+		aMap.put(1, "asde");
+		bMap.put(1, "asde");
+		System.out.println(aMap.equals(bMap));
 	}
 	
 }
