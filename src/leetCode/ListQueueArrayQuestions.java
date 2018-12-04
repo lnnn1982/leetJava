@@ -279,7 +279,94 @@ class NextPermutationSolution1 {
         return;
          
     }
-}    
+}
+
+//https://leetcode.com/problems/basic-calculator/submissions/
+class BasicCal1Sol {
+    public int calculate(String s) {
+        LinkedList<String> postExpList = new LinkedList<String>();
+        LinkedList<Character> opStack = new LinkedList<>();
+        for(int i = 0; i < s.length(); i++) {
+            StringBuilder oneNumB = new StringBuilder();
+            while(i < s.length() && Character.isDigit(s.charAt(i))) {
+                oneNumB.append(s.charAt(i));
+                i++;
+            }
+            
+            if(!oneNumB.toString().isEmpty()) {
+                postExpList.add(oneNumB.toString());
+            }
+            
+            if(i == s.length()) {
+                break;
+            }
+            
+            char ch = s.charAt(i);
+            if(s.charAt(i) == ' ') {
+                continue;
+            }
+            
+            Character topChar = null;
+            while((topChar = opStack.peek()) != null) {
+                if(ch == '(') {
+                    break;
+                }
+                
+                if(ch == ')') {
+                    if(topChar == '(') {
+                        opStack.pop();
+                        break;
+                    }
+                    else {
+                        postExpList.add(String.valueOf(opStack.pop()));
+                    }
+                }
+                else {
+                    if(topChar == '(') {
+                        break;
+                    }
+                    else {
+                        postExpList.add(String.valueOf(opStack.pop()));
+                    }
+                    
+                }
+
+            }
+            
+            if(ch != ')') {
+                opStack.push(ch);
+            }
+            
+            //System.out.println("bbbbbbbbbbbbbbb i: "+i  + ", strB:" + strB.toString()+ " "+ opStack);
+        }
+        
+        while(!opStack.isEmpty()) {
+            postExpList.add(String.valueOf(opStack.pop()));
+        }
+        
+        //System.out.println(postExpList);
+        
+        LinkedList<Integer> digitStack = new LinkedList<>();
+
+        for(String ele : postExpList) {
+            if(ele.equals("+")) {
+                int sum = digitStack.pop()+digitStack.pop();
+                digitStack.push(sum);
+            }
+            else if(ele.equals("-")) {
+                int minus = 0-digitStack.pop()+digitStack.pop();
+                digitStack.push(minus);
+            }
+            else {
+                digitStack.push(Integer.parseInt(ele));
+            }
+
+        }
+        
+        return digitStack.pop();
+
+    }
+}
 
 public class ListQueueArrayQuestions {
 	
