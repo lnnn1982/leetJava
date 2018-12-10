@@ -77,8 +77,8 @@ class BSTDistanceSolution {
 	TreeNode lca = null;
 	
 	int getDistance(TreeNode root, TreeNode n1, TreeNode n2 ) {
-		//dfs(root, 0, null);
-		dfsForBST(root, 0, null, n1, n2);
+		dfs(root, 0, null);
+		//dfsForBST(root, 0, null, n1, n2);
 		if(!nodeDepthMap.containsKey(n1) || !nodeDepthMap.containsKey(n2)) {
 			return -1;
 		}
@@ -121,24 +121,76 @@ class BSTDistanceSolution {
 	}
 	
 	
-	void dfsForBST(TreeNode root, int depth, TreeNode prevNode, TreeNode n1, TreeNode n2) {
-		if(root == null) return;
-		nodeParantMap.put(root,  prevNode);
-		nodeDepthMap.put(root, depth);
-		
-		if(lca == null) {
-			if((root == n1 || root == n2)) {
-				lca = root;
-			}
-			
-			if((n1.val > root.val && n2.val < root.val) || (n2.val > root.val && n1.val < root.val)) {
-				lca = root;
-			}
-		}
-		
-		dfs(root.left, depth+1, root);
-		dfs(root.right, depth+1, root);
-	}
+//	void dfsForBST(TreeNode root, int depth, TreeNode prevNode, TreeNode n1, TreeNode n2) {
+//		if(root == null) return;
+//		nodeParantMap.put(root,  prevNode);
+//		nodeDepthMap.put(root, depth);
+//		
+//		if(lca == null) {
+//			if((root == n1 || root == n2)) {
+//				lca = root;
+//			}
+//			
+//			if((n1.val > root.val && n2.val < root.val) || (n2.val > root.val && n1.val < root.val)) {
+//				lca = root;
+//			}
+//		}
+//		
+//		dfs(root.left, depth+1, root);
+//		dfs(root.right, depth+1, root);
+//	}
+}
+
+//https://leetcode.com/problems/binary-tree-maximum-path-sum/submissions/
+class BinaryTreeMaximumPathSumSol {
+    int maxNum = Integer.MIN_VALUE;
+    
+    
+    public int getMaxValue(TreeNode root) {
+        if(root == null) {
+            return 0;
+        }
+        
+        int leftValue = getMaxValue(root.left);
+        int rightValue = getMaxValue(root.right);
+        int maxRetValue = Math.max(leftValue+root.val, rightValue+root.val);
+        maxRetValue = Math.max(root.val, maxRetValue);
+        
+        int maxValue = Math.max(root.val+leftValue+rightValue, maxRetValue);
+        if(maxValue > maxNum) maxNum = maxValue;
+        return maxRetValue;
+    }
+    public int maxPathSum(TreeNode root) {
+        getMaxValue(root);
+        return maxNum;
+     
+    }
+}
+
+//https://leetcode.com/problems/binary-tree-preorder-traversal/submissions/
+class PreorderTraversalSolution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> output = new ArrayList<>();
+        LinkedList<TreeNode> stack = new LinkedList<>();
+        
+        if(root == null) return output;
+        
+        stack.push(root);
+        while(!stack.isEmpty()) {
+            TreeNode curNode = stack.pop();
+            output.add(curNode.val);
+            
+            if(curNode.right != null) {
+                stack.push(curNode.right);
+            }
+            
+            if(curNode.left != null) {
+                stack.push(curNode.left);
+            }
+        }
+        
+        return output;
+    }
 }
 
 public class TreeQuestions {

@@ -368,6 +368,55 @@ class BasicCal1Sol {
     }
 }
 
+//https://leetcode.com/problems/merge-intervals/
+class MergeIntervalSolution {
+	
+	/**
+	 * Definition for an interval.*/
+	 public class Interval {
+	      int start;
+	      int end;
+	      Interval() { start = 0; end = 0; }
+	      Interval(int s, int e) { start = s; end = e; }
+	 }
+	
+    public List<Interval> merge(List<Interval> intervals) {
+        List<Interval> rst = new ArrayList<Interval>();
+        if(intervals.size() == 0) {
+            return rst;
+        }
+        else if(intervals.size() == 1) {
+            rst.add(intervals.get(0));
+            return rst;
+        }
+        
+        Collections.sort(intervals, new Comparator<Interval>(){
+            public int compare(Interval a, Interval b) {
+                return a.start-b.start;
+            }
+        });
+        
+        Interval lastInterval = intervals.get(0);
+        for(int i = 1; i < intervals.size(); i++) {
+            Interval curInterval = intervals.get(i);
+            if(curInterval.start <= lastInterval.end && curInterval.end > lastInterval.end) {
+                lastInterval = new Interval(lastInterval.start, curInterval.end);
+                continue;
+            }
+            
+            if(curInterval.start > lastInterval.end) {
+                rst.add(lastInterval);
+                lastInterval = curInterval;
+                continue;
+            }
+        }
+        
+        rst.add(lastInterval);
+        
+        return rst;
+    }
+}
+
 public class ListQueueArrayQuestions {
 	
     static public void main(String[] args) {
