@@ -141,6 +141,82 @@ class BSTDistanceSolution {
 //	}
 }
 
+//https://leetcode.com/problems/delete-node-in-a-bst/
+class DeleteNodeInBtsSol {
+    public TreeNode findLeftMostNode(TreeNode node) {
+        if(node == null) return null;
+        
+        while(node.left != null) {
+            node = node.left;
+        }
+        
+        return node;
+    }
+    
+    public TreeNode deleteRoot(TreeNode rootNode) {
+        TreeNode newRootNode = null;
+        if(rootNode.left != null && rootNode.right != null) {
+            newRootNode = rootNode.right;
+            TreeNode leftNode = findLeftMostNode(rootNode.right);
+            leftNode.left = rootNode.left;
+        }
+        else {
+            newRootNode = rootNode.left == null ? rootNode.right : rootNode.left;
+        }
+        
+        return newRootNode;
+    }
+    
+    public void deleteNode(TreeNode prevNode, TreeNode deleteNode) {  
+        if(deleteNode.left != null && deleteNode.right != null ) {
+            if(prevNode.left == deleteNode) prevNode.left = deleteNode.right;
+            else prevNode.right = deleteNode.right;
+            TreeNode leftNode = findLeftMostNode(deleteNode.right);
+            leftNode.left = deleteNode.left;
+        }
+        else {
+            if(prevNode.left == deleteNode) {
+                prevNode.left = deleteNode.left == null ? deleteNode.right : deleteNode.left;
+            }
+            else prevNode.right = deleteNode.left == null ? deleteNode.right : deleteNode.left;
+        }
+    }
+    
+    
+    public TreeNode deleteNode(TreeNode root, int key) {
+        TreeNode prevNode = root;
+        TreeNode curNode = root;
+        while(curNode != null) {
+            if(curNode.val == key) {
+                if(curNode == root) {
+                    return deleteRoot(root);
+                }
+                else {
+                    deleteNode(prevNode, curNode);
+                    return root;
+                }
+            }
+            
+            prevNode = curNode;
+            if(curNode.left != null && key < curNode.val) {
+                curNode = curNode.left;
+            }
+            else if(curNode.right != null && key > curNode.val)
+            {
+                curNode = curNode.right;
+            } 
+            else {
+                return root;
+            }
+        }
+        
+        return root;
+    }
+}
+
+
+
+
 //https://leetcode.com/problems/binary-tree-maximum-path-sum/submissions/
 class BinaryTreeMaximumPathSumSol {
     int maxNum = Integer.MIN_VALUE;

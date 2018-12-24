@@ -417,6 +417,125 @@ class MergeIntervalSolution {
     }
 }
 
+//https://leetcode.com/problems/find-median-from-data-stream/
+class MedianFinder {
+    PriorityQueue<Integer> firstQueue = new PriorityQueue<>(new Comparator<Integer>(){
+        public int compare(Integer a, Integer b) {
+            return b-a;
+        }
+    });
+    PriorityQueue<Integer> secondQueue = new PriorityQueue<>();
+
+    /** initialize your data structure here. */
+    public MedianFinder() {
+    }
+    
+    public void addNum(int num) {
+        if(firstQueue.isEmpty()) {
+            firstQueue.offer(num);
+            
+            return;
+        }
+        
+        if(secondQueue.isEmpty()) {
+            if(firstQueue.peek() <= num) {
+                secondQueue.offer(num);
+            }
+            else {
+                secondQueue.offer(firstQueue.poll());
+                firstQueue.offer(num);
+            }
+            
+            return;
+        }
+        
+        if(num >= secondQueue.peek()) {
+            if(secondQueue.size() > firstQueue.size()) {
+                firstQueue.offer(secondQueue.poll());
+            }
+            secondQueue.offer(num);
+        }
+        else if(num <= firstQueue.peek()) {
+            if(firstQueue.size() > secondQueue.size()) {
+                secondQueue.offer(firstQueue.poll());
+            }
+            firstQueue.offer(num);
+        }
+        else {
+            if(firstQueue.size() <= secondQueue.size()) {
+                firstQueue.offer(num);
+            }
+            else {
+                secondQueue.offer(num);
+            }
+        }
+    }
+    
+    public double findMedian() {
+        if(firstQueue.isEmpty() && secondQueue.isEmpty()) {
+            return 0;
+        }
+        
+        if(firstQueue.size() == secondQueue.size()) {
+            return (double)(firstQueue.peek()+secondQueue.peek())/2;
+        }
+        else if(firstQueue.size() > secondQueue.size()) {
+            return firstQueue.peek();
+        }
+        else {
+            return secondQueue.peek();
+        }
+        
+        
+    }
+    
+}
+
+//https://leetcode.com/problems/sliding-window-maximum/
+class SlidingwWindowMaximumSol {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if(nums.length == 0 || k == 0) {
+            return new int[]{};
+        }
+        
+        LinkedList<Integer> queue = new LinkedList<>();
+        int[] rst = new int[nums.length-k+1];
+        for(int i = 0; i < nums.length; i++) {
+            if(i >= k) {
+                Integer index = queue.peek();
+                if(index != null && (index == i-k)) {
+                    queue.poll();
+                }
+            }
+            
+            while(true) {
+                if(queue.isEmpty()) {
+                    break;
+                }
+                
+                if(nums[queue.peekLast()] <= nums[i]) {
+                    queue.pollLast();
+                }
+                else {
+                    break;
+                }
+            }
+            
+
+            
+            queue.offer(i);
+            if(i >= k-1) {
+                rst[i-k+1] = nums[queue.peek()];
+            }
+        }
+        
+        return rst;
+    }
+    
+
+}
+
+
 public class ListQueueArrayQuestions {
 	
     static public void main(String[] args) {
