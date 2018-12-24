@@ -272,7 +272,7 @@ public class AmazonTest {
 	    }
 	    
 	    static void testBTS() {
-	    	int ret = bstDistance(new int[] {3,6, 2, 7, 9}, 2, 3);
+	    	int ret = bstDistance(new int[] {3,6, 2, 7, 9}, 2, 2);
 	    	System.out.println(ret);
 	    	
 	    	
