@@ -89,7 +89,7 @@ public class AmazonTest {
 		System.out.println("rst:" + rst);
 	}
 	
-	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	static class LogInfo {
 		String id;
 		String content;
@@ -153,7 +153,7 @@ public class AmazonTest {
 
 	}
 	
-	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	static class TreeNode {
 	    TreeNode left;
 	    TreeNode right;
@@ -279,13 +279,100 @@ public class AmazonTest {
 	    }
 	}
 	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public static List<List<Integer>> getBestAirPlanMiles(int maximumMiles, List<List<Integer>> forwardRouts, 
+			List<List<Integer>> returnRouts) 
+	{
+	    forwardRouts.sort(new Comparator<List<Integer>>(){
+	        public int compare(List<Integer> a, List<Integer> b) {
+	            return a.get(1)-b.get(1);
+	        }
+	    });
+
+	    returnRouts.sort(new Comparator<List<Integer>>(){
+	        public int compare(List<Integer> a, List<Integer> b) {
+	            return b.get(1)-a.get(1);
+	        }
+	    });
+
+	    int closestMile = Integer.MIN_VALUE;
+	    int i = 0;
+	    int j = 0;
+	    List<List<Integer>> rst = new ArrayList<>();
+	    while(i < forwardRouts.size() && j < returnRouts.size()) {
+	        int curForMile = forwardRouts.get(i).get(1);
+	        int returnMile = returnRouts.get(j).get(1);
+
+	        if(curForMile+returnMile > maximumMiles) {
+	            j++;
+	            continue;
+	        }
+
+	        if(curForMile+returnMile > closestMile) {
+	            closestMile = curForMile+returnMile;
+	            rst.clear();
+	            List<Integer> oneRst = new ArrayList<>();
+	            oneRst.add(forwardRouts.get(i).get(0));
+	            oneRst.add(returnRouts.get(j).get(0));
+	            rst.add(oneRst);
+	        }
+	        else if(curForMile+returnMile == closestMile) {
+	            List<Integer> oneRst = new ArrayList<>();
+	            oneRst.add(forwardRouts.get(i).get(0));
+	            oneRst.add(returnRouts.get(j).get(0));
+	            rst.add(oneRst);
+	        }
+	    
+	        i++;
+	    }
+
+	    return rst;
+	}
 	
+	public static void testAirPlanMile() {
+		List<List<Integer>> forwardRouts = new ArrayList<>();
+		forwardRouts.add(Arrays.asList(new Integer[] {1, 3000}));
+		forwardRouts.add(Arrays.asList(new Integer[] {2, 5000}));
+		forwardRouts.add(Arrays.asList(new Integer[] {3, 7000}));
+		forwardRouts.add(Arrays.asList(new Integer[] {4, 10000}));
+		
+		List<List<Integer>> returnRouts = new ArrayList<>();
+		returnRouts.add(Arrays.asList(new Integer[] {1, 2000}));
+		returnRouts.add(Arrays.asList(new Integer[] {2, 3000}));
+		returnRouts.add(Arrays.asList(new Integer[] {3, 4000}));
+		returnRouts.add(Arrays.asList(new Integer[] {4, 5000}));		
+		
+		List<List<Integer>> rst = getBestAirPlanMiles(10000, forwardRouts, returnRouts);
+		System.out.println("rst:"+rst);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	public static void main(String[] args) {
 		//testGetMostFrequentWords();
 		//testSortLog();
-		BSTDistance.testBTS();
-	
+		//BSTDistance.testBTS();
+		testAirPlanMile();
 	
 	}
 	

@@ -1,7 +1,9 @@
 package leetCode;
+import static org.junit.jupiter.api.Assumptions.assumingThat;
+
 import java.util.*;
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //https://leetcode.com/problems/palindrome-pairs/submissions/
 class PalindromeSolution {  
     boolean checkIfPalin(String words, int i, int j) {
@@ -91,6 +93,8 @@ class PalindromeSolution {
         return rstList;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //https://www.geeksforgeeks.org/count-number-of-substrings-with-exactly-k-distinct-characters/
 class KDistinctCharactersSol {
@@ -216,18 +220,123 @@ class KDistinctCharactersSol {
 //    	String longStr = longestSubStringWithKDistinctChar("abcabcefg", 3);
 //    	System.out.println("longStr:" + longStr);
     	
-
-    	
-    	
-    	
-    	
     }
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class StrWithNoRepeatSubstrWithLenthLSol {
+	public static List<String> strWithNoRepeatSubstrWithLenthL(String str, int l) {
+		List<String> rst = new ArrayList<>();
+		if(str == null) {
+			return rst;
+		}
+		
+		for(int i = 0; i <= str.length()-l; i++ ) {
+			String oneStr = str.substring(i, i+l);
+			if(checkIfStrRepeat(oneStr)) {
+				rst.add(oneStr);
+			}
+		}
+		
+		return rst;
+	}
+	
+	static boolean checkIfStrRepeat(String str) {
+		HashSet<Character> charSet = new HashSet<>();
+		for(int i = 0; i < str.length(); i++) {
+			if(charSet.contains(str.charAt(i))) {
+				return false;
+			}
+			
+			charSet.add(str.charAt(i));
+		}
+		
+		return true;
+	}
+	
+	public static List<String> strWithNoRepeatSubstrWithLenthLV1(String str, int l) {
+		List<String> rst = new ArrayList<>();
+		if(str == null) {
+			return rst;
+		}
+		 
+		int i = 0;
+		HashMap<Character, Integer> charMap = new HashMap<>();
+		for(int j = 0; j < str.length(); j++) {
+			char ch = str.charAt(j);
+			if(!charMap.containsKey(ch)) {
+				charMap.put(ch, j);
+				if(charMap.size() == l) {
+					rst.add(str.substring(i, j+1));
+					charMap.remove(str.charAt(i));
+					i++;
+				}
+			}
+			else {
+				int lastIndex = charMap.get(ch);
+				for(; i <=  lastIndex; i++) {
+					charMap.remove(str.charAt(i));
+				}
+				
+				charMap.put(ch, j);
+			}
+		}
+		
+		return rst;
+	}
+	
+	
+	static void test() {
+		String a = "aabcdedfgfhh";
+		List<String> rst = strWithNoRepeatSubstrWithLenthL(a, 3);
+		System.out.println("rst:"+rst);
+		
+		List<String> rst1 = strWithNoRepeatSubstrWithLenthLV1(a, 3);
+		System.out.println("rst1:"+rst1);
+		
+		a = "abcdefg";
+		rst = strWithNoRepeatSubstrWithLenthL(a, 3);
+		System.out.println("rst:"+rst);
+		
+		rst1 = strWithNoRepeatSubstrWithLenthLV1(a, 3);
+		System.out.println("rst1:"+rst1);
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 public class StringQuestion {
 	public static void main(String[] args) {
-		KDistinctCharactersSol.test();
+		//KDistinctCharactersSol.test();
+		StrWithNoRepeatSubstrWithLenthLSol.test();
+		
+		
 	}
 	
 }

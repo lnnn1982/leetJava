@@ -7,6 +7,8 @@ public class CollectionTest {
 		List<String> aList = new ArrayList<>();
 		aList.add("a");
 		aList.add("b");
+		ArrayList<Integer> b = new ArrayList<>();
+		b.hashCode();
 		
 		List<String> bList = new ArrayList<>();
 		bList.add("a");
@@ -93,15 +95,53 @@ public class CollectionTest {
 		
 		//Collections.sort(l);
 	    System.out.println(l);
+	}
+	
+	public static void testString() {
+		String a= "/a/../../b/../c//.//";
+		String[] splits = a.split("/+");
+		System.out.println(Arrays.toString(splits));
+	}
+	
+	public static void testArray() {
+		int [][] a = new int[1][2];
+		a[0][0] = 1;
+		a[0][1] = 2;
 		
+		int [][] b = new int[1][2];
+		b[0][0] = 1;
+		b[0][1] = 2;
 		
+		System.out.println("equal:" + a.equals(b));
 		
+		int[][] a1 = {{1}};
+		int[][] b1 = {{1}};
+		System.out.println("equal:" + a1.equals(b1));
+	}
+	
+	public static void testClone() {
+		List<List<String>> a = new ArrayList<>();
+		List<String> bList = new ArrayList<>();
+		bList.add("123");
+		bList.add("445");
+		a.add(bList);
+		
+		List<String> bList1 = new ArrayList<>();
+		bList1.add("1233");
+		bList1.add("4453");
+		a.add(bList1);
+		
+		List<List<String>> b = (List<List<String>>)(((ArrayList<List<String>>)(a)).clone());
+		System.out.println("b:"+b);
 		
 		
 	}
 	
 	public static void main(String[] args) {
-		testSort();
+		//testSort();
+		//testString();
+		//testArray();
+		testClone();
 
 	}
 	

@@ -1,5 +1,4 @@
 package leetCode;
-import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 import java.util.*;
 
@@ -70,6 +69,7 @@ class DistanceKSampleSolution {
         }
     }
 }
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 class BSTDistanceSolution {
 	Map<TreeNode, TreeNode> nodeParantMap = new HashMap<>();
@@ -85,8 +85,8 @@ class BSTDistanceSolution {
 		
 		int dep1 = nodeDepthMap.get(n1);
 		int dep2 = nodeDepthMap.get(n2);
-		//return dep1+dep2-2*nodeDepthMap.get(getLCA(n1, n2));
-		return dep1+dep2-2*nodeDepthMap.get(lca);
+		return dep1+dep2-2*nodeDepthMap.get(getLCA(n1, n2));
+		//return dep1+dep2-2*nodeDepthMap.get(lca);
 	}
 	
 	//not for bst, for general binary queue
@@ -140,6 +140,7 @@ class BSTDistanceSolution {
 //		dfs(root.right, depth+1, root);
 //	}
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //https://leetcode.com/problems/delete-node-in-a-bst/
 class DeleteNodeInBtsSol {
@@ -214,7 +215,7 @@ class DeleteNodeInBtsSol {
     }
 }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //https://leetcode.com/problems/binary-tree-maximum-path-sum/submissions/
@@ -243,6 +244,8 @@ class BinaryTreeMaximumPathSumSol {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 //https://leetcode.com/problems/binary-tree-preorder-traversal/submissions/
 class PreorderTraversalSolution {
     public List<Integer> preorderTraversal(TreeNode root) {
@@ -268,6 +271,32 @@ class PreorderTraversalSolution {
         return output;
     }
 }
+
+class BinaryTreeInorderTraversalSolution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> output = new ArrayList<>();
+        LinkedList<TreeNode> stack = new LinkedList<>();
+        
+        if(root == null) return output;
+        TreeNode curNode = root;
+        
+        while(!stack.isEmpty() || curNode != null) {
+            while(curNode != null) {
+                stack.push(curNode);
+                curNode = curNode.left;
+            }
+            
+            curNode = stack.pop();
+            output.add(curNode.val);
+            curNode = curNode.right;
+        }
+        
+        return output; 
+        
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public class TreeQuestions {
 	int diameter = 0;
@@ -304,7 +333,8 @@ public class TreeQuestions {
         return isSubtree(s.left, t) || isSubtree(s.right, t);
     }
 	
-	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     public void binaryTreePaths(TreeNode node, List<String> paths, String prevPath) {
         if(node == null) return;
         
@@ -331,7 +361,9 @@ public class TreeQuestions {
         return list;
         
     }
-	
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     public boolean hasPathSum(TreeNode root, int sum, int prevSum) {
         if(root == null) return false;
         
@@ -349,7 +381,9 @@ public class TreeQuestions {
     public boolean hasPathSum(TreeNode root, int sum) {
         return hasPathSum(root, sum, 0);
     }
-	
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     public int diameterOfBinaryTreeHelper(TreeNode root) {
         if (root == null) {return 0;}
         
@@ -367,6 +401,7 @@ public class TreeQuestions {
         return diameter;
     }
     
+//////////////////////////////////////////////////////////////////////////////////////////////////////////   
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if(root == null || p == null || q == null) {
             return null;
@@ -392,7 +427,8 @@ public class TreeQuestions {
         
         return curNode;
     }
-	
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
     public int minDepth(TreeNode root) {
         if(root == null) return 0;
         
@@ -431,7 +467,7 @@ public class TreeQuestions {
         return depth;
     }
     
-    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////    
     List<List<Integer>> sumList = new ArrayList<>();
     int sumValue = 0;
     
@@ -469,7 +505,7 @@ public class TreeQuestions {
         return sumList;   
     }
     
-    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////    
     static public TreeNode makeTree(Integer[] values) {
         int len = values.length;
         if(len == 0) {
@@ -528,6 +564,8 @@ public class TreeQuestions {
     	if(right != null) return right;
     	return null;
     }
+ 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     static public void main(String[] args) {
     	//TreeNode root = makeTree(new Integer[]{0, 1, 2, 3, 4, 5});
