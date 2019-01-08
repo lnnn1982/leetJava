@@ -244,7 +244,414 @@ class DistanceKSolution {
       
   }
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//https://www.cnblogs.com/grandyang/p/5285868.html
+class WallsGatesSol {
+	public void wallsAndGates(int[][] rooms) {
+		if(rooms == null || rooms.length == 0 || rooms[0].length == 0) {
+			return;
+		}
+		int m = rooms.length;
+		int n = rooms[0].length;
+		
+		LinkedList<int[]> queue = new LinkedList<>();
+		boolean[][] visit = new boolean[m][n];
+		int[][] direct = {{0,-1}, {0,1}, {-1,0}, {1,0}};
+		
+		for(int i = 0; i < m; i++) {
+			for(int j = 0; j < n; j++) {
+				if(rooms[i][j] == 0) {
+					queue.offer(new int[] {i,j});
+				}
+			}
+		}
+		
+		int level = 0;
+		while(!queue.isEmpty()) {
+			level++;
+			LinkedList<int[]> nextLevelQueue = new LinkedList<>();
+			for(int[] curPos : queue) {
+				for(int[] oneDirect : direct) {
+					int x = curPos[0]+oneDirect[0];
+					int y = curPos[1]+oneDirect[1];
+					if(x<0||x>=m||y<0||y>=n) {
+						continue;
+					}
+					
+					if(rooms[x][y] == -1) {
+						continue;
+					}
+					
+					if(rooms[x][y] == Integer.MAX_VALUE) {
+						rooms[x][y] = level;
+						nextLevelQueue.offer(new int[]{x, y});
+					}
+				}
+			}
+			
+			queue = nextLevelQueue;
+		}
+		
+		System.out.println(Arrays.deepToString(rooms));
+	}
+	
+	static public void test() {
+		int[][] rooms = {{Integer.MAX_VALUE, -1, 0, Integer.MAX_VALUE},
+				{Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, -1},
+				{Integer.MAX_VALUE, -1, Integer.MAX_VALUE, -1},
+				{0, -1, Integer.MAX_VALUE, Integer.MAX_VALUE}};
+		WallsGatesSol sol = new WallsGatesSol();
+		sol.wallsAndGates(rooms);
+	}
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//https://leetcode.com/problems/redundant-connection/solution/
+class RedundantConnectionSolution {
+    int[] visit = null;
+    int[] father = null;
+    boolean cycle = false;
+    
+    void dfs(int curNode, ArrayList[] neighbors) {
+        if(cycle) {
+            return;
+        }
+        
+        visit[curNode] = 1;
+        ArrayList<Integer> neighbor = neighbors[curNode];
+        for(int oneNei : neighbor) {
+            if(father[curNode] == oneNei) {
+                continue;
+            }
+            
+            if(visit[oneNei] == 1 || visit[oneNei] == 2) {
+                cycle = true;
+                visit[curNode] = 2;
+                return;
+            }
+            
+            if(visit[oneNei] == 0) {
+                father[oneNei] = curNode;
+                dfs(oneNei, neighbors);
+            }
+        }
+        
+        visit[curNode] = 2;
+    }
+   
+    public int[] findRedundantConnection(int[][] edges) {
+        if(edges == null || edges.length == 0) {
+            return new int[]{};
+        }
+        
+        ArrayList[] neighbors = new ArrayList[edges.length+1];
+        for(int i = 0; i < neighbors.length; i++) {
+            neighbors[i] = new ArrayList<>();
+        }
+        
+        visit = new int[edges.length+1];
+        father = new int[edges.length+1];
+        
+
+        for(int[] oneEdge : edges) {
+            Arrays.fill(father, -1);
+            Arrays.fill(visit, 0);
+            
+            neighbors[oneEdge[0]].add(oneEdge[1]);
+            neighbors[oneEdge[1]].add(oneEdge[0]);
+
+            dfs(oneEdge[0], neighbors);
+
+            if(cycle) {
+                return oneEdge;
+            }
+        }
+        
+        return new int[]{};
+    }
+    
+    public int[] findRedundantConnectionUsingGroup(int[][] edges) {
+        if(edges == null || edges.length == 0) {
+            return new int[]{};
+        }
+        
+        ArrayList<HashSet<Integer>> groupList = new ArrayList<>();
+        int groupStatus = 0;
+        
+        for(int[] edge : edges) {
+            int oneGroupInd = -1;
+            int twoGroupInd = -1;
+            
+            for(int i = 0; i < groupList.size(); i++) {
+                if(groupList.get(i).contains(edge[0]) && groupList.get(i).contains(edge[1])) {
+                    return edge;
+                }
+                
+                if(groupList.get(i).contains(edge[0])) {
+                    oneGroupInd = i;
+                }
+                
+                if(groupList.get(i).contains(edge[1])) {
+                    twoGroupInd = i;
+                }
+            }
+            
+            if(oneGroupInd == -1 && twoGroupInd == -1) {
+                HashSet<Integer> oneGroup = new HashSet<>();
+                oneGroup.add(edge[0]);
+                oneGroup.add(edge[1]);
+                groupList.add(oneGroup);
+                continue;
+            }
+            
+            // && oneGroupInd != twoGroupInd
+            if(oneGroupInd != -1 && twoGroupInd != -1) {
+                HashSet<Integer> oneGroup = groupList.get(oneGroupInd);
+                HashSet<Integer> twoGroup = groupList.get(twoGroupInd);
+                oneGroup.addAll(twoGroup);
+                groupList.remove(twoGroupInd);
+                continue;
+            }
+            
+            if(oneGroupInd != -1) {
+                groupList.get(oneGroupInd).add(edge[1]);
+            }
+            else {
+                groupList.get(twoGroupInd).add(edge[0]);
+            }
+        }
+        
+        return new int[]{};
+    }
+    
+    boolean dfs(ArrayList<Integer>[] graph, int curNode, int targetNode) {
+        if(curNode == targetNode) {
+            return true;
+        }
+        
+        visit[curNode] = 1;
+        
+        ArrayList<Integer> neighbors = graph[curNode];
+        for(int oneNeigh : neighbors) {
+            if(oneNeigh == targetNode) {
+                return true;
+            }
+            
+            if(visit[oneNeigh] == 1) {
+                continue;
+            }
+            
+            
+            if(dfs(graph, oneNeigh, targetNode)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public int[] findRedundantConnectionUsingDFS(int[][] edges) {
+        if(edges == null || edges.length == 0) {
+            return new int[]{};
+        }
+        
+        ArrayList<Integer>[] graph = new ArrayList[edges.length+1];
+        for(int i = 0; i < graph.length; i++) {
+            graph[i] = new ArrayList<Integer>();
+        }
+        visit = new int[edges.length+1];
+        
+        for(int[] oneEdge : edges) {
+            Arrays.fill(visit, 0);
+            if(dfs(graph, oneEdge[0], oneEdge[1])) {
+                return oneEdge;
+            }
+            
+            graph[oneEdge[0]].add(oneEdge[1]);
+            graph[oneEdge[1]].add(oneEdge[0]);   
+        }
+        
+        
+        return new int[]{};
+    }
+
+	class UnionFinder {
+		int[] rank = null;
+		int[] parent = null;
+
+		UnionFinder(int size) {
+			rank = new int[size];
+			parent = new int[size];
+
+			for (int i = 0; i < parent.length; i++) {
+				parent[i] = i;
+			}
+		}
+
+		int find(int node) {
+			while (parent[node] != node) {
+				node = parent[node];
+			}
+
+			return node;
+		}
+
+		boolean union(int node1, int node2) {
+			int pNode1 = find(node1);
+			int pNode2 = find(node2);
+
+			// System.out.println("111111111111node1:"+node1+",pNode1:"+pNode1+",node2:"+node2+",pNode2:"+pNode2);
+
+			if (pNode1 == pNode2)
+				return false;
+
+			if (rank[pNode1] == rank[pNode2]) {
+				parent[pNode2] = pNode1;
+				rank[pNode1]++;
+			} else if (rank[pNode1] < rank[pNode2]) {
+				parent[pNode1] = pNode2;
+			} else {
+				parent[pNode2] = pNode1;
+			}
+
+			// System.out.println("2222222222node1:"+node1+",pNode1:"+pNode1+",node2:"+node2+",pNode2:"+pNode2);
+			return true;
+		}
+	}
+     
+     public int[] findRedundantConnectionUsUF(int[][] edges) {
+         if(edges == null || edges.length == 0) {
+             return new int[]{};
+         }
+         
+         UnionFinder uf = new UnionFinder(edges.length+1);
+         for(int[] edge : edges) {
+             if(!uf.union(edge[0], edge[1])) {
+                 return edge;
+             }
+         }
+         
+         return new int[]{};
+     }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/
+class MostStonesRemovedwitSameRoworColumnSolution {
+    int[][] direct = {{0,1}, {0,-1}, {-1,0},{1,0}};
+   
+    void dfs(int[][] graph, int ox, int oy) {
+        graph[ox][oy] = 2;
+        for(int[] oneDirect : direct) {
+            int x = ox+oneDirect[0];
+            int y = oy+oneDirect[1];
+            boolean flg = false;
+            while(x>=0&&x<graph.length && y>=0&&y<graph[0].length) {
+                if(graph[x][y] == 1) {
+                    flg = true;
+                    break;
+                }
+                
+                x = x+oneDirect[0];
+                y = y+oneDirect[1];
+                
+            }
+            
+            if(flg) {
+                dfs(graph, x, y);
+            }
+        }
+    }
+    
+        
+    public int removeStonesUsDFS(int[][] stones) {
+        if(stones == null || stones.length == 0) return 0;
+        
+        int m = 0, n = 0;
+        for(int[] oneStone : stones) {
+            if(oneStone[0] > m) m = oneStone[0];
+            if(oneStone[1] > n) n = oneStone[1];
+        }
+        
+        if(m == 0 || n == 0) {
+            return 0;
+        }
+        
+        int[][] graph = new int[m+1][n+1];
+        for(int[] oneStone : stones) {
+            graph[oneStone[0]][oneStone[1]] = 1;
+        }
+        //System.out.println(Arrays.deepToString(graph));
+        
+        int group = 1;
+        for(int[] oneStone : stones) {
+            if(graph[oneStone[0]][oneStone[1]] == 1) {
+                dfs(graph, oneStone[0], oneStone[1]);
+                //System.out.println(Arrays.deepToString(graph));
+                group++;
+            }
+        }
+        group--;
+        //System.out.println("group:"+group);
+        return stones.length-group;
+    }
+    
+    class UnionFinder {
+        int[] parent = null;
+        int[] rank = null;
+        
+        UnionFinder(int size) {
+            parent = new int[size];
+            rank = new int[size];
+            for(int i = 0; i < parent.length; i++) {
+                parent[i] = i;
+            }
+        }
+        
+        int find(int node) {
+            while(parent[node] != node) {
+                node = parent[node];
+            }
+            
+            return node;
+        }
+        
+        void union(int x, int y) {
+            int ox = find(x);
+            int oy = find(y);
+            if(ox == oy) return;
+            if(rank[ox] == rank[oy]) {
+                parent[oy] = ox;
+                rank[ox]++;
+            }
+            else if(rank[ox] < rank[oy]) {
+                parent[ox] = oy;
+            }
+            else {
+                parent[oy] = ox;
+            }
+        }
+    } 
+     
+         
+     public int removeStones(int[][] stones) {
+         if(stones == null || stones.length == 0) return 0;
+         UnionFinder uf = new UnionFinder(20000);
+         for(int[] stone : stones) {
+             uf.union(stone[0], stone[1]+10000);
+         }
+         
+         HashSet<Integer> groups = new HashSet<>();
+         for(int[] stone : stones) {
+             groups.add(uf.find(stone[0]));
+         }
+         
+         return stones.length-groups.size();
+
+     }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public class GraphQuestion {
@@ -295,6 +702,20 @@ public class GraphQuestion {
 		    }
 		    
 		    return false;
+    }
+    
+    public static void testMaze() {
+    	int[][] matrix = {{0,0,0,0}, {1,1,9,0}, {1,0,1,1}};
+    	boolean rst = maze(matrix);
+    	System.out.println("rst:" + rst);
+    	
+    	int[][] matrix1 = {{0,1,0,0}, {1,1,9,0}, {1,0,1,1}};
+    	rst = maze(matrix1);
+    	System.out.println("rst:" + rst);
+    	
+    	int[][] matrix2 = {{0,1,0,0}, {0,1,9,0}, {0,0,1,1}};
+    	rst = maze(matrix2);
+    	System.out.println("rst:" + rst);
     }
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,29 +850,7 @@ public class GraphQuestion {
 ////////////////////////////////////////////////////////////////////////////////////////
     
     public static void main(String[] args) {
-    	int[][] matrix = {{0,0,0,0}, {1,1,9,0}, {1,0,1,1}};
-    	boolean rst = maze(matrix);
-    	System.out.println("rst:" + rst);
-    	
-    	int[][] matrix1 = {{0,1,0,0}, {1,1,9,0}, {1,0,1,1}};
-    	rst = maze(matrix1);
-    	System.out.println("rst:" + rst);
-    	
-    	int[][] matrix2 = {{0,1,0,0}, {0,1,9,0}, {0,0,1,1}};
-    	rst = maze(matrix2);
-    	System.out.println("rst:" + rst);
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
+    	WallsGatesSol.test();
     	
     }
 }
