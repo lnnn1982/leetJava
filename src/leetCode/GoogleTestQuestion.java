@@ -269,10 +269,11 @@ people:[2, 2], car:[2, 3]
 		int father[] = null;
 		
 		void dfs(List<List<Integer>> graph, int curNode) {
+			System.out.println("***************dfs, curNode:"+curNode);
 			visit[curNode] = 1;
 			List<Integer> neibors = graph.get(curNode);
 			for(int neigh : neibors) {
-				
+				System.out.println("***************neigh"+ neigh + ", curNode:"+curNode);
 				if(visit[neigh] == 1 && father[curNode] != neigh) {
 					genCycle(curNode, neigh);
 				}
@@ -288,7 +289,7 @@ people:[2, 2], car:[2, 3]
 		}
 		
 		void genCycle(int curNode, int neigh) {
-			System.out.println("curNode:"+curNode+", neigh:"+neigh);
+			System.out.println("genCycle curNode:"+curNode+", neigh:"+neigh);
 			//System.out.println("father:"+Arrays.toString(father));
 			List<Integer> oneCycle = new ArrayList<>();
 			while(curNode != neigh) {
@@ -585,8 +586,8 @@ people:[2, 2], car:[2, 3]
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//CarPeopleMatchProblem.test();
-		//GetCycle.test();
-		TaskAssignement.test();
+		GetCycle.test();
+		//TaskAssignement.test();
 	}
 
 }

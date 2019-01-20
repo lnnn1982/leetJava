@@ -535,6 +535,7 @@ class RedundantConnectionSolution {
      }
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/
 class MostStonesRemovedwitSameRoworColumnSolution {
@@ -648,7 +649,100 @@ class MostStonesRemovedwitSameRoworColumnSolution {
          
          return stones.length-groups.size();
 
-     }
+     } 
+}
+
+class MostStonesRemovedwitSameRoworColumnSolution1 {
+    HashMap<Integer, List<Integer>> colMap = new HashMap<>();
+    HashMap<Integer, List<Integer>> rowMap = new HashMap<>();
+    int group = 0;
+    
+    void dfs(int[][] stones, int i, boolean[] visit) {
+        visit[i] = true;
+        List<Integer> colList = colMap.get(stones[i][1]);
+        for(int neiId : colList) {
+            if(!visit[neiId]) {
+                dfs(stones, neiId, visit);
+            }
+        }
+        List<Integer> rowList = rowMap.get(stones[i][0]);
+        for(int neiId : rowList) {
+            if(!visit[neiId]) {
+                dfs(stones, neiId, visit);
+            }
+        }
+    }
+    
+    void getGroupByDFS(int[][]stones) {
+        boolean[] visit = new boolean[stones.length];
+        for(int i = 0; i < stones.length; i++) {
+            if(!visit[i]) {
+                group++;
+                dfs(stones, i, visit);
+            }
+        }
+    }
+    
+    void bfs(int[][] stones) {
+        boolean[] visit = new boolean[stones.length];
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+        for(int i = 0; i < stones.length; i++) {
+            if(visit[i]) {
+                continue;
+            }
+            group++;
+            queue.offer(i);
+            visit[i] = true;
+            while(!queue.isEmpty()) {
+                int curId = queue.poll();
+                List<Integer> rowList = rowMap.get(stones[curId][0]);
+                for(int neiId : rowList) {
+                    if(!visit[neiId]) {
+                        queue.add(neiId);
+                        visit[neiId] = true;
+                    }
+                }
+                List<Integer> colList = colMap.get(stones[curId][1]);
+                for(int neiId : colList) {
+                    if(!visit[neiId]) {
+                        queue.add(neiId);
+                        visit[neiId] = true;
+                    }
+                }
+                
+            }  
+        } 
+    }
+    
+    
+    public int removeStones(int[][] stones) {
+        for(int i = 0; i < stones.length; i++) {
+            int[] stone = stones[i];
+            List<Integer> rList = rowMap.get(stone[0]);
+            if(rList == null) {
+                List<Integer> nList = new ArrayList<Integer>();
+                nList.add(i);
+                rowMap.put(stone[0], nList);
+            }
+            else {
+                rList.add(i);
+            }
+            
+            List<Integer> cList = colMap.get(stone[1]);
+            if(cList == null) {
+                List<Integer> nList = new ArrayList<Integer>();
+                nList.add(i);
+                colMap.put(stone[1], nList);
+            }
+            else {
+                cList.add(i);
+            }
+        }
+        
+        //bfs(stones);
+        getGroupByDFS(stones);
+        return stones.length - group;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
