@@ -2,6 +2,272 @@ package leetCode;
 
 import java.util.*;
 
+
+class DebugTest {
+	static int appearKTime(int size, int inputArray[], int k) {
+		Arrays.sort(inputArray);
+		System.out.println(Arrays.toString(inputArray));
+		int i = 1, count = 1;
+		int element = inputArray[0];
+		int res = -1;
+		while(i < size) {
+			if(element == inputArray[i]) {
+				count++;
+			}
+			else {
+				if(count == k) {
+					res = element;
+				}
+				
+				element = inputArray[i];
+				count = 1;
+			}
+
+			i++;
+		}
+		
+		if(count == k) {
+			res = element;
+		}
+		
+		return res;
+	}
+	
+	static public void testAppearKTime() {
+		int res = appearKTime(6, new int[]{1,1,2,2,3,4}, 2);
+		System.out.println("res:"+res);
+		
+		res = appearKTime(6, new int[]{1,2,2,3,3,1}, 2);
+		System.out.println("res:"+res);
+	}
+	
+	static int countElement(int arr[], int n) {
+		int count = 0, len = arr.length;
+		int doubleN = 2*n;
+		for(int i = 0; i < arr.length; ) {
+			if(arr[i++] > doubleN) {
+				count+=1;
+			}
+		}
+		
+		return count;
+	}
+	
+	static void testCountElement() {
+		int ret = countElement(new int[] {1, 2, 3, 4, 5, 5}, 2);
+		System.out.println("ret:"+ret);
+	}
+	
+	public static int distinctElementsCount(int size, int[] elements) {
+		int[] counted = new int[size];
+		int count, flag;
+		counted[0] = elements[0];
+		count = 1;
+		for(int i=0; i < size; i++) {
+			flag = 0;
+			for(int j = 0; j < count; j++) {
+				if(elements[i] == counted[j]) {
+					flag = 1;
+				}
+			}
+			
+			if(flag == 0) {
+				count++;
+				counted[count-1] = elements[i];
+			}
+		}
+		
+		return count;	
+	}
+	
+	public static void testDistinctElements() {
+		System.out.println(distinctElementsCount(5, new int[] {1,1,3,4,5}));
+	}
+	
+	static String eliminateVowel(String str) {
+		String newString = "";
+		int i = 0;
+		char[] S = str.toCharArray();
+		int len = str.length();
+		if (len == 0) {
+			return "";
+		}
+		while (i < S.length) {
+			switch (S[i]) {
+			default:
+				newString += S[i];
+				i++;
+				break;
+			case 'a':
+				i++;
+				break;
+			case 'e':
+				i++;
+				break;
+			case 'i':
+				i++;
+				break;
+			case 'o':
+				i++;
+				break;
+			case 'u':
+				i++;
+				break;
+			case 'A':
+				i++;
+				break;
+			case 'E':
+				i++;
+				break;
+			case 'U':
+				i++;
+				break;
+			case 'I':
+				i++;
+				break;
+			case 'O':
+				i++;
+				break;
+
+			}
+		}
+
+		return newString;
+	}
+	
+	static void testeliminateVowel() {
+		System.out.println(eliminateVowel("abcde"));
+	}
+	
+	static int checkArmstrong(int num) {
+		int digitCount = 0, result = 0;
+		// calculate number of digits
+		int temp = num;
+		while (temp != 0) {
+
+			temp = temp / 10;
+			digitCount++;
+		}
+
+		System.out.println("digitCount:"+digitCount);
+		// sum digits to nth power
+		temp = num;
+		while (temp != 0) {
+			int remainder = temp % 10;
+			result += Math.pow(remainder, digitCount);
+			temp /= 10;
+		}
+		if (result == num)
+			return 1;
+		else
+			return 0;
+	}
+	
+    static void testArmStrong() {
+    	System.out.println(checkArmstrong(153));
+    }
+	
+    static int medianValue(int size, int[] arr1, int[] arr2) {
+    	int[] arr = new int[2*size];
+    	for(int i = 0; i < 2*size; i++) {
+    		if(i<size) arr[i] = arr1[i];
+    		else arr[i] = arr2[i-size];
+    	}
+    	
+    	Arrays.sort(arr);
+    	int length = 2*size;
+    	int medi = (arr[length/2-1]+arr[length/2])/2;
+    	return medi;
+    }
+    
+    static void testMedianValue() {
+    	System.out.println(medianValue(4, new int[]{1,2,3,4}, new int[] {1,2,3,4}));
+    }
+	
+    private static final Set<Character> VOWELS = new HashSet<>();
+    static {
+        VOWELS.add('a'); VOWELS.add('A'); VOWELS.add('e'); VOWELS.add('E');
+        VOWELS.add('i'); VOWELS.add('I'); VOWELS.add('o'); VOWELS.add('O');
+        VOWELS.add('u'); VOWELS.add('U');
+    }
+    
+    
+    static int vowelsString(String inputstr) {
+    	int i = 0, vcount = 0, len = inputstr.length();
+    	while(i<len) {
+    		if(VOWELS.contains(inputstr.charAt(i))) {
+    			vcount += 1;
+    		}
+    		i++;
+    	}
+    	
+    	if(vcount>(len/2)) return 1;
+    	else return 0;
+    }
+    
+    static void testVowelsString() {
+    	System.out.println(vowelsString("abcaaa"));
+    	System.out.println(vowelsString("abc"));
+    }
+    
+    static int sumDistinct (int size, int[] inputArray)
+    {
+        Arrays.sort(inputArray);
+        int sum =inputArray[0];
+        int point = inputArray[0];
+        for(int i = 1 ; i < size ; i++)
+        {
+            if(point != inputArray[i])
+            {
+                sum+=inputArray[i];
+                point = inputArray[i];
+            }
+                 
+        }
+        return sum;
+    }
+    
+    static void testSumDistinct() {
+    	System.out.println(sumDistinct(4, new int[] {9,2,2,3}));
+    }
+    
+    static int[] sortArray(int arr[]) {
+    	int len = arr.length;
+    	int i, j, temp;
+    	for(i = 0; i <= len-1; i++) {
+    		for(j = i; j < len; j++) {
+    			temp = 0;
+    			if(arr[i] < arr[j]) {
+    				//System.out.println("i:"+i+", j:"+j+", a:"+ arr[i]+", a:"+arr[j]);
+    				temp = arr[i];
+    				arr[i] = arr[j];
+    				arr[j] = temp;
+    			}
+    		}
+    	}
+    	return arr;
+    }
+    
+    static void testSortArray() {
+    	System.out.println(Arrays.toString(sortArray(new int[] {1, 2, 3, 4, 5})));
+    }
+    
+    
+    
+	static public void test() {
+		//testAppearKTime();
+		//testCountElement();
+		//testDistinctElements();
+		//testeliminateVowel();
+		//testArmStrong();
+		//testMedianValue();
+		//testVowelsString();
+		//testSumDistinct();
+		testSortArray();
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
 public class AmazonTest {
     static List<String> getMostFrequentWords(String sentence, List<String> excludeList) {
         List<String> rst = new ArrayList<>();
@@ -372,7 +638,10 @@ public class AmazonTest {
 		//testGetMostFrequentWords();
 		//testSortLog();
 		//BSTDistance.testBTS();
-		testAirPlanMile();
+		//testAirPlanMile();
+		
+		DebugTest.test();
+		
 	
 	}
 	

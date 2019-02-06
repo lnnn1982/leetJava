@@ -83,6 +83,55 @@ public class MergeTwoSortedLists {
 	    return newHead;
 	}
 	
+    public ListNode mergeTwoLists1(ListNode l1, ListNode l2) {
+        ListNode newList = null;
+        ListNode curNode = newList;
+        while(l1 != null && l2 != null) {
+            if(l1.val < l2.val) {
+                if(newList == null) {
+                    newList = l1;
+                    curNode = newList;
+                }
+                else {
+                    curNode.next = l1;
+                    curNode = curNode.next;
+                }
+                l1 = l1.next;
+            }
+            else {
+                if(newList == null) {
+                    newList = l2;
+                    curNode = newList;
+                }
+                else {
+                    curNode.next = l2;
+                    curNode = curNode.next;
+                }
+                l2 = l2.next;                
+            }
+        }
+        
+        if(l1 != null) {
+            if(newList == null) {
+                newList = l1;
+            }
+            else {
+                curNode.next = l1;
+            }
+        }
+        
+        if(l2 != null) {
+            if(newList == null) {
+                newList = l2;
+            }
+            else {
+                curNode.next = l2;
+            }
+        }
+        
+        return newList;
+    }
+    
 	public static void printNode(ListNode l) {
 		while(l != null) {
 			System.out.println("--" + l.val + "--");

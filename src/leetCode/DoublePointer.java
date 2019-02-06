@@ -1,4 +1,5 @@
 package leetCode;
+import java.util.*;
 
 //https://leetcode.com/problems/backspace-string-compare/submissions/
 class BackspaceCompareSol {
@@ -192,11 +193,85 @@ class  SearchinRotatedSortedArraySolution {
 
 }
 
+//https://www.cnblogs.com/grandyang/p/5595614.html
+class SortTransformedArraySolution {
+	public int[] sortTransformedArray(int[] nums, int a, int b, int c) {
+		int i = 0;
+		int j = nums.length-1;
+		int[] rst = new int[nums.length];
+		int time = 0;
+		
+		while(i <= j) {
+			int iY = calc(a,b,c,nums[i]);
+			int jY = calc(a,b,c,nums[j]);
+			if(a >= 0) {
+				if(iY >= jY) {
+					rst[nums.length-time-1] = iY;
+					i++;
+				}
+				else {
+					rst[nums.length-time-1] = jY;
+					j--;
+				}
+			}
+			else {
+				if(iY <= jY) {
+					rst[time] = iY;
+					i++;
+				}
+				else {
+					rst[time] = jY;
+					j--;
+				}				
+			}
+			time++;
+		}
+		
+		return rst;
+	}
+
+	int calc(int a, int b, int c, int x) {
+		return a*x*x + b*x + c;
+	}
+	
+	static public void test() {
+		SortTransformedArraySolution sol = new SortTransformedArraySolution();
+//		int[] input = {-4, -2, 2, 4};
+//		int[] rst = sol.sortTransformedArray(input, 1, 3, 5);
+		
+//		int[] input = {-4, -2, 2, 4};
+//		int[] rst = sol.sortTransformedArray(input, -1, 3, 5);
+		
+//		int[] input = {-4, -2, 2, 4};
+//		int[] rst = sol.sortTransformedArray(input, 0, 3, 5);
+		
+		int[] input = {-4, -2, 2, 4};
+		int[] rst = sol.sortTransformedArray(input, 0, -3, 5);
+		System.out.println(Arrays.toString(rst));
+	}
+}
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 public class DoublePointer {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		SortTransformedArraySolution.test();
 
 	}
 

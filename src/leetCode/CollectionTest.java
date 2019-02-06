@@ -69,7 +69,7 @@ public class CollectionTest {
 	}
 	
 	public static void testMap() {
-		//testTreeSet();
+		testTreeSet();
 		//testPriorityQueue();
 		
 		HashMap<Integer, String> aMap = new HashMap<>();
@@ -141,7 +141,8 @@ public class CollectionTest {
 		//testSort();
 		//testString();
 		//testArray();
-		testClone();
+		//testClone();
+		testMap();
 
 	}
 	
