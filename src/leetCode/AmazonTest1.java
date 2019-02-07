@@ -668,6 +668,61 @@ public class AmazonTest1 {
     	int[][] matrix = {{1,1,0,0}, {0,1,0,0}, {1,1,1,9}};
     	System.out.println(maze(matrix));
     }
+    
+    static int getShortestSteps(List<List<Integer>> maze) {
+        int m = maze.size();
+        if(m == 0) return -1;
+        int n = maze.get(0).size();
+        if(n == 0) return -1;
+
+        int[][] directions = {{0,1},{0,-1},{-1,0},{1,0}};
+        if(maze.get(0).get(0) == 0) return -1;
+        if(maze.get(0).get(0) == 9) return 0;
+
+        boolean[][] visit = new boolean[m][n];
+        LinkedList<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{0,0});
+        visit[0][0] = true;
+        
+        int level = 0;
+        while(!queue.isEmpty()) {
+            level++;
+            LinkedList<int[]> newQueue = new LinkedList<>();
+            for(int[] onePos : queue) {
+                for(int[] oneDir : directions) {
+                    int row = onePos[0]+oneDir[0];
+                    int col = onePos[1]+oneDir[1];
+
+                    if(row<0 || row>=m || col<0 || col>=n) {
+                        continue;
+                    }
+
+                    int val = maze.get(row).get(col);
+                    if(val == 9) return level;
+                    if(val == 1 && !visit[row][col]) {
+                        visit[row][col] = true;
+                        newQueue.add(new int[]{row, col});
+                    }
+                }
+            }
+
+            queue = newQueue;
+        }
+
+        return -1;
+    } 
+    
+    public static void testGetShortestSteps() {
+    	List<Integer> r1 = Arrays.asList(new Integer[]{1,1,0,9});
+    	List<Integer> r2 = Arrays.asList(new Integer[]{1,1,0,0});
+    	List<Integer> r3 = Arrays.asList(new Integer[]{1,1,1,1});
+    	List<List<Integer>> matrix = new ArrayList<>();
+    	matrix.add(r1);
+    	matrix.add(r2);
+    	matrix.add(r3);
+
+    	System.out.println(getShortestSteps(matrix));
+    }
 	
     static class MaxMinPath {
         static int maxV = Integer.MIN_VALUE;
@@ -756,7 +811,7 @@ public class AmazonTest1 {
 //        		return a.get(1) - b.get(1);
 //        	}
 //        });
-        int[] ret = null;
+        int[] ret = new int[] {};
         int maxDuration = 0;
         int i =0;
         int j = mList.size()-1;
@@ -810,29 +865,33 @@ public class AmazonTest1 {
         static double maxAvgValue = 0;
         static AryTreeNode maxNode = null;
 
-        static List<Integer> dfs(AryTreeNode root) {
-            List<Integer> ret = new ArrayList<>();
+        static List<Double> dfs(AryTreeNode root) {
+            List<Double> ret = new ArrayList<>();
             if(root == null) {
-                ret.add(0);
-                ret.add(0);
+                ret.add(0.0);
+                ret.add(0.0);
                 return ret;
             }
             
-            int sumGrade = 0;
-            int sumChildren = 0;
+            double sumGrade = 0;
+            double sumChildren = 0;
             if(root.children != null) {
                 for(AryTreeNode child : root.children) {
-                    List<Integer> retOfOneChild = dfs(child);
+                    List<Double> retOfOneChild = dfs(child);
                     sumGrade += retOfOneChild.get(0);
-                    sumChildren = retOfOneChild.get(1);
+                    sumChildren += retOfOneChild.get(1);
                 }
             }
 
             sumGrade += root.value;
             sumChildren += 1;
-            double curAvgValue = sumGrade/sumChildren;
-            if(Double.compare(curAvgValue, maxAvgValue) > 0) {
-                maxNode = root;
+            if(root.children != null && root.children.size() != 0) {
+            	System.out.println("sumGrade:"+sumGrade+", sumChildren:"+sumChildren+", node:"+root.value);
+                double curAvgValue = sumGrade/sumChildren;
+                System.out.println("curAvgValue:"+curAvgValue);
+                if(Double.compare(curAvgValue, maxAvgValue) > 0) {
+                    maxNode = root;
+                }
             }
             
             ret.add(sumGrade);
@@ -841,6 +900,8 @@ public class AmazonTest1 {
         }
 
         static AryTreeNode getMostAvgTreeNode(AryTreeNode root) {
+            maxAvgValue = 0;
+            maxNode = null;
             dfs(root);
             return maxNode;
         }
@@ -863,10 +924,211 @@ public class AmazonTest1 {
         	node20.addChild(node11);
         	
         	System.out.println(getMostAvgTreeNode(node20).value);
-        	System.out.println(getMostAvgTreeNode(node11).value);
-        	System.out.println(getMostAvgTreeNode(node00).value);
+        	//System.out.println(getMostAvgTreeNode(node11).value);
+        	//System.out.println(getMostAvgTreeNode(node00).value);
         } 
     }
+    
+    static class High_Five {
+        static class Result{
+            int id;
+            int value;
+            public Result(int id, int value){
+                this.id = id;
+                this.value = value;
+            }
+        }
+
+        static Map<Integer, Double> getHighFive(Result[] results) {
+            HashMap<Integer, List<Integer>> idGradesMap = new HashMap<>();
+            for(Result oneR : results) {
+                List<Integer> grades = idGradesMap.get(oneR.id);
+                if(grades == null) {
+                    grades = new ArrayList<>();
+                    grades.add(oneR.value);
+                    idGradesMap.put(oneR.id, grades);
+                }
+                else {
+                    grades.add(oneR.value);
+                }
+            }
+
+            Map<Integer, Double> ret = new HashMap<>();
+            for(Map.Entry<Integer, List<Integer>> oneE : idGradesMap.entrySet()) {
+                List<Integer> grades = oneE.getValue();
+                grades.sort((a,b)->a-b);
+                double gradeSum = 0;
+                int i = 0;
+                for(; i < 5; i++) {
+                    int index = grades.size()-i-1;
+                    if(index < 0) break;
+                    gradeSum += grades.get(index);
+                }
+                
+                System.out.println("gradeSum:"+gradeSum+", id:"+oneE.getKey() + ", i:"+i);
+
+                double avg = gradeSum/i;
+                System.out.println("avg:"+avg);
+                ret.put(oneE.getKey(), avg);
+            }
+
+            return ret;
+        }
+        
+        static Map<Integer, Double> getHighFiveUsePri(Result[] results) {
+            HashMap<Integer, PriorityQueue<Integer>> idGradesMap = new HashMap<>();
+            for(Result oneR : results) {
+                PriorityQueue<Integer> grades = idGradesMap.get(oneR.id);
+                if(grades == null) {
+                    grades = new PriorityQueue<>((a,b)->b-a);
+                    grades.add(oneR.value);
+                    idGradesMap.put(oneR.id, grades);
+                }
+                else {
+                    grades.add(oneR.value);
+                }
+            }
+
+            Map<Integer, Double> ret = new HashMap<>();
+            for(Map.Entry<Integer, PriorityQueue<Integer>> oneE : idGradesMap.entrySet()) {
+                PriorityQueue<Integer> grades = oneE.getValue();
+                double gradeNum = 0;
+                int i = 0;
+                for(; i < 5; i++) {
+                    Integer grade = grades.poll();
+                    if(grade == null) {
+                        break;
+                    }
+                    gradeNum += grade;
+                }
+
+                double avg = gradeNum/i;
+                ret.put(oneE.getKey(), avg);
+            }
+
+            return ret;
+        }
+        
+        static void testGetHighFive() {
+        	Result r1 = new Result(1, 95);
+        	Result r2 = new Result(1, 95);
+        	Result r3 = new Result(1, 91);
+        	Result r4 = new Result(1, 91);
+        	Result r5 = new Result(1, 93);
+        	Result r6 = new Result(1, 105);
+        	Result r7 = new Result(2, 6);
+        	Result r8 = new Result(2, 6);
+        	Result r9 = new Result(2, 7);
+        	Result r10 = new Result(2, 6);
+        	Result r11 = new Result(2, 6);
+        	Result r12 = new Result(2, 90);
+        	Result[] arr = {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12};
+        	Map<Integer, Double> res = getHighFive(arr);
+        	System.out.println(res.get(1) + " " +res.get(2));
+        	
+        	res = getHighFiveUsePri(arr);
+        	System.out.println(res.get(1) + " " +res.get(2));
+        }
+    }
+
+    static class City_Connections {
+
+        static class Connection{
+            String node1;
+            String node2;
+            int cost;
+            public Connection(String a, String b, int c){
+                node1 = a;
+                node2 = b;
+                cost = c;
+            }
+        }
+
+        static int unionNum = 0;
+
+        static List<Connection> getLowCost(List<Connection> connections) {
+            if(connections == null || connections.size() == 0) return new ArrayList<>();
+    
+            connections.sort((a,b)->a.cost-b.cost);
+            List<Connection> rst = new ArrayList<>();
+            HashMap<String, Integer> unionMap = new HashMap<>();
+
+            for(Connection oneConn : connections) {
+                if(union(unionMap, oneConn.node1, oneConn.node2)) {
+                    rst.add(oneConn);
+                }
+            }
+
+            int unionNum = unionMap.get(connections.get(0).node1);
+            for(HashMap.Entry<String, Integer> entry : unionMap.entrySet()) {
+                if(entry.getValue() != unionNum) return new ArrayList<>();
+            }
+
+            rst.sort((a,b)->{
+                int cmp = a.node1.compareTo(b.node1);
+                if(cmp != 0) return cmp;
+                return a.node2.compareTo(b.node2);
+            });
+
+            return rst;
+        }
+
+        static boolean union(HashMap<String, Integer> unionMap, String n1, String n2) {
+            Integer num1 = unionMap.get(n1);
+            Integer num2 = unionMap.get(n2);
+            if(num1 == null && num2 == null) {
+                unionNum++;
+                unionMap.put(n1, unionNum);
+                unionMap.put(n2, unionNum);
+                return true;
+            }
+
+            if(num1 == null) {
+                unionMap.put(n1, num2);
+                return true;
+            }
+
+            if(num2 == null) {
+                unionMap.put(n2, num1);
+                return true;
+            }
+
+            if(num1 == num2) {
+                return false;
+            }
+
+            for(String key : unionMap.keySet()) {
+                int value = unionMap.get(key);
+                if(value == num1) {
+                    unionMap.put(key, num2);
+                }
+            }
+            return true;
+        }
+        
+        static void testGetLowCost() {
+            ArrayList<Connection> connections = new ArrayList<>();
+            //下面的图是个苯环，中间加上了几根，如果想验证空表，去掉几根线就行。
+            connections.add(new Connection("A","B",6));
+            connections.add(new Connection("B","C",4));
+            connections.add(new Connection("C","D",5));
+            connections.add(new Connection("D","E",8));
+            connections.add(new Connection("E","F",2));
+            //connections.add(new Connection("A","F",16));
+            
+            //connections.add(new Connection("B","F",10));
+            //connections.add(new Connection("E","C",9));
+            //connections.add(new Connection("F","C",7));
+            //connections.add(new Connection("B","E",3));
+            
+            //这里就输出一下看看结果。
+            List<Connection> res = getLowCost(connections);
+            for (Connection c : res){
+                System.out.println(c.node1 + " -> " + c.node2 + " " + c.cost);
+            }
+        }
+    }
+    
     
     
     
@@ -885,8 +1147,10 @@ public class AmazonTest1 {
 		//testMaze();
 		//MaxMinPath.testGetMaxMinPath();
 		//testGetMovieIndices();
-		MostAvgTreeNode.testGetMostAvgTreeNode();
-		
+		//MostAvgTreeNode.testGetMostAvgTreeNode();
+		//testGetShortestSteps();
+		//High_Five.testGetHighFive();
+		City_Connections.testGetLowCost();
 		
 	}
 
