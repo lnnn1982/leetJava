@@ -318,7 +318,9 @@ people:[2, 2], car:[2, 3]
 			return cycleList;
 		}
 		
-		void bfs(List<List<Integer>> graph, int node) {
+		/*******************the algorithm of BFS is not correct**************************/
+		
+		/*void bfs(List<List<Integer>> graph, int node) {
 			LinkedList<Integer> queue = new LinkedList<>();
 			queue.offer(node);
 			visit[node] = 1;
@@ -379,7 +381,7 @@ people:[2, 2], car:[2, 3]
 			}
 			
 			return cycleList;
-		}
+		}*/
 		
 		static void test() {
 			List<List<Integer>> graph = new ArrayList<>();
@@ -414,11 +416,11 @@ people:[2, 2], car:[2, 3]
 			oneNeigh.add(5);
 			graph.add(oneNeigh);			
 			
-//			GetCycle cycle = new GetCycle();
-//			List<List<Integer>> cycleList = cycle.getCycleFromGraph(graph);
-			
 			GetCycle cycle = new GetCycle();
-			List<List<Integer>> cycleList = cycle.getCycleFromGraphBFS(graph);			
+			List<List<Integer>> cycleList = cycle.getCycleFromGraph(graph);
+			
+//			GetCycle cycle = new GetCycle();
+//			List<List<Integer>> cycleList = cycle.getCycleFromGraphBFS(graph);			
 			System.out.println("cycleList:"+cycleList);
 		}
 	}

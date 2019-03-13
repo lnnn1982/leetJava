@@ -550,6 +550,50 @@ class SlidingwWindowMaximumSol {
     
 
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//https://leetcode.com/problems/rotate-list/
+class RotateListSolution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null) return null;
+        
+        ListNode curNode = head;
+        int len = 0;
+        while(curNode != null) {
+            len++;
+            curNode = curNode.next;
+        }
+        
+        k = k%len;
+        if(k == 0) return head;
+        
+        int firNum = len-k;
+        ListNode newLastNode = null;
+        ListNode newHeadNode = null;
+        ListNode lastNode = null;
+        
+        curNode = head;
+        int newLen = 0;
+        while(curNode != null) {
+            newLen++;
+            if(newLen == firNum) {
+                newLastNode = curNode;
+                newHeadNode = curNode.next;
+            }
+            else if(newLen == len) {
+                lastNode = curNode;
+            }
+            
+            curNode = curNode.next;
+        }
+        
+        lastNode.next = head;
+        newLastNode.next = null;
+        return newHeadNode;
+        
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class ListQueueArrayQuestions {

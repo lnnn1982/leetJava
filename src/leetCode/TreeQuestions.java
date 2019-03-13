@@ -15,6 +15,8 @@ class TreeNode {
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 //https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/solution/
 //difficult to implement. Just use one recursive traverse. During the recursive, call find subtree function.
 class DistanceKSampleSolution {
@@ -217,7 +219,6 @@ class DeleteNodeInBtsSol {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 //https://leetcode.com/problems/binary-tree-maximum-path-sum/submissions/
 class BinaryTreeMaximumPathSumSol {
     int maxNum = Integer.MIN_VALUE;
@@ -294,6 +295,72 @@ class BinaryTreeInorderTraversalSolution {
         return output; 
         
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+class Codec {
+	int n = 0;
+	void genStr(TreeNode root, StringBuilder strB) {
+		if(root == null) {
+			strB.append("#");
+			strB.append(",");
+			return;
+		}
+		
+		strB.append(root.val);
+		strB.append(",");
+		
+		genStr(root.left, strB);
+		genStr(root.right, strB);
+	}
+	
+	public String serialize(TreeNode root) {
+		StringBuilder strB = new StringBuilder();
+		genStr(root, strB);
+		strB.deleteCharAt(strB.length()-1);
+		String rst = strB.toString();
+		
+		return rst;
+	}
+	
+	TreeNode genNode(String[] nodeStrs) {
+		//System.out.println("genNode, n:"+n+", str:"+nodeStrs[n]);
+		if(nodeStrs[n].equals("#")) {
+			return null;
+		}
+		
+		TreeNode node = new TreeNode(Integer.parseInt(nodeStrs[n]));
+		//System.out.println("left before n:"+n);
+		n++;
+		//System.out.println("left after n:"+n);
+		node.left = genNode(nodeStrs);
+		//System.out.println("right before n:"+n);
+		n = n+1;
+		//System.out.println("right after n:"+n);
+		node.right = genNode(nodeStrs);
+	
+		return node;	
+	}
+	
+	public TreeNode deserialize(String data) {
+		n = 0;
+		
+		String[] nodeStrs = data.split(",");
+		System.out.println("nodeStrs:"+Arrays.toString(nodeStrs));
+		TreeNode root = genNode(nodeStrs);
+		return root;
+	}
+	
+	static public void test() {
+		Codec codec = new Codec();
+		
+    	TreeNode root = TreeQuestions.makeTree(new Integer[]{1,2,3,null,null,4,5});
+    	
+    	String nodeStr = codec.serialize(root);
+    	System.out.println(nodeStr);
+    	root = codec.deserialize(nodeStr);
+    	TreeQuestions.traverseTree(root);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,6 +571,7 @@ public class TreeQuestions {
         pathSum(root, prevSumList);
         return sumList;   
     }
+
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////    
     static public TreeNode makeTree(Integer[] values) {
@@ -564,6 +632,7 @@ public class TreeQuestions {
     	if(right != null) return right;
     	return null;
     }
+    
  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -574,13 +643,14 @@ public class TreeQuestions {
     	//TreeNode root = makeTree(new Integer[]{0, 1, null, 3, 4, null, null});
     	//traverseTree(root);
     	
-    	TreeNode root = makeTree(new Integer[]{6,2,8,0,4,7,9,null,null,3,5});
-    	traverseTree(root);
+//    	TreeNode root = makeTree(new Integer[]{6,2,8,0,4,7,9,null,null,3,5});
+//    	traverseTree(root);
+//    	
+//    	BSTDistanceSolution distanceSolution = new BSTDistanceSolution();
+//    	int dis = distanceSolution.getDistance(root, getNode(root,4), getNode(root,7));
+//    	System.out.println("dis:" + dis);
     	
-    	BSTDistanceSolution distanceSolution = new BSTDistanceSolution();
-    	int dis = distanceSolution.getDistance(root, getNode(root,4), getNode(root,7));
-    	System.out.println("dis:" + dis);
-    	
+    	Codec.test();
     	
     }
     

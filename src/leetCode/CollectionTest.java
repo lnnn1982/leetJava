@@ -143,6 +143,10 @@ public class CollectionTest {
 		//testArray();
 		//testClone();
 		testMap();
+		
+		LinkedList<Integer> a = null;
+		//a.sort();
+		Collections.sort(a);
 
 	}
 	
